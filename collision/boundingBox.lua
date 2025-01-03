@@ -1,6 +1,9 @@
 local t = {}
 
-function t.impl(table)
+---Make or create an axis aligned bounding box
+---@param table table
+---@return aabb
+function t.impl_aabb(table)
     ---An axis aligned bounding box
     ---@class aabb
     ---@field x integer
@@ -39,7 +42,7 @@ function t.impl(table)
     ---@return boolean
     function bb:vs_point(point_x, point_y)
         return point_x >= self.x and point_x < self.x + self.width and point_y >= self.y and
-        point_y < self.y + self.height
+            point_y < self.y + self.height
     end
 
     ---check this aabb vs another one
@@ -53,6 +56,8 @@ function t.impl(table)
 
         return not (is_to_the_left or is_to_the_right or is_below or is_above)
     end
+
+    return bb
 end
 
 return t
