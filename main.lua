@@ -60,7 +60,7 @@ function love.mousepressed(x, y, button, _)
     end
 
     for index, item in ipairs(dragables) do
-        if x >= item.x and x < item.x + item.width and y >= item.y and y < item.y + item.height then
+        if item:vs_point(x, y) then
             hand.empty = false
             hand.held_item = table.remove(dragables, index)
         end

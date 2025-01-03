@@ -1,7 +1,7 @@
 local t = {}
 
 ---Make or create an axis aligned bounding box
----@param table table
+---@param table table | nil
 ---@return aabb
 function t.impl_aabb(table)
     ---An axis aligned bounding box
