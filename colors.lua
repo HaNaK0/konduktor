@@ -1,4 +1,4 @@
-local t
+local t = {}
 
 t.colors = {
     RED = {1, 0, 0},
