@@ -40,6 +40,8 @@ function love.draw()
         love.graphics.setColor(item.color)
         love.graphics.rectangle("fill", item.x, item.y, item.width, item.height)
     end
+    local s_width, s_height, _ = love.window.getMode()
+    love.graphics.print("(" .. s_width .. "," .. s_height .. ")")
 end
 
 function love.update(dt)
