@@ -2,6 +2,7 @@ local util = require("util")
 local colors = require("colors").colors
 local my_colors = require("colors").my_colors
 local dragable = require("draggable")
+local log = require("log")
 
 local dragables = {}
 local hand = {
@@ -10,10 +11,16 @@ local hand = {
 }
 
 function love.load()
+    log:setup()
     local x, y = util.screen_space(0.5, 0.5)
     local ticket = dragable.new(my_colors.ticket_color, x, y, 75, 50)
     table.insert(dragables, ticket)
     print("loaded")
+	Error("an error")
+	Warn("a warning")
+	Info("some info")
+	Debug("some debug")
+	Trace("a trace")
 end
 
 function love.draw()
@@ -41,11 +48,11 @@ function love.draw()
         love.graphics.rectangle("fill", item.x, item.y, item.width, item.height)
     end
     local s_width, s_height, _ = love.window.getMode()
-    love.graphics.print("(" .. s_width .. "," .. s_height .. ")")
+    log:draw()
 end
 
 function love.update(dt)
-
+	log:update(dt)
 end
 
 function love.mousemoved(_, _, dx, dy)
