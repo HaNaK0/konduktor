@@ -15,12 +15,7 @@ function love.load()
     local x, y = util.screen_space(0.5, 0.5)
     local ticket = dragable.new(my_colors.ticket_color, x, y, 75, 50)
     table.insert(dragables, ticket)
-    print("loaded")
-	Error("an error")
-	Warn("a warning")
-	Info("some info")
-	Debug("some debug")
-	Trace("a trace")
+	Info("loading done")
 end
 
 function love.draw()
