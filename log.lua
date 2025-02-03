@@ -23,7 +23,7 @@ t.config = {
 ---@param ... any content to be printed.
 function t:log(level, ...)
 	local message ="[" .. level .. "]"
-	local args = table.pack(...)
+	local args = {n = select("#", ...), ...}
 
 	for i = 1, args.n, 1 do
 		message = message .. args[i]
@@ -35,8 +35,12 @@ end
 ---update timers 
 --- @param dt number time passed since last upddate 
 function t:update(dt)
-	for _, msg in ipairs(self.messages) do
+	local old = {}
+	for i, msg in ipairs(self.messages) do
 		msg.time = msg.time + dt
+		if msg.time >= self.config.show_time then
+			table.insert(old, i)
+		end
 	end
 end
 
@@ -44,8 +48,14 @@ end
 function t:draw()
 	local font = love.graphics.getFont()
 	for index, msg in ipairs(self.messages) do
+		local time_left = self.config.show_time - msg.time
+		local alpha = 1
+		if time_left <= self.config.fade_time then
+			alpha = time_left / self.config.fade_time
+		end
 		local line_y = font:getHeight() * (index - 1)
-		love.graphics.setColor(self.colors[msg.level])
+		local c = self.colors[msg.level]
+		love.graphics.setColor(c[1], c[2], c[3], alpha)
 		love.graphics.print(msg.text, 0, line_y)
 	end
 end
