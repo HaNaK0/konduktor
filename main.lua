@@ -82,3 +82,7 @@ function love.mousereleased(x, y, button, _)
         hand.held_item = nil
     end
 end
+
+function love.resize(w, h)
+	Debug(("window resized to (%d, %d)"):format(w, h))
+end

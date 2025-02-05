@@ -3,11 +3,12 @@ local colors = require("colors").colors
 ---@field level LogLevel
 ---@field text string
 ---@field time number
+---@field persistant boolean
 
 ---@class Log
 ---the log structure
 ---@field private messages Message[] messages currently shown on screen.
----@field config LogConfig 
+---@field config LogConfig
 local t = {}
 
 ---@class LogConfig contains options for the log systemm
@@ -22,24 +23,44 @@ t.config = {
 ---@param level LogLevel level of this log
 ---@param ... any content to be printed.
 function t:log(level, ...)
-	local message ="[" .. level .. "]"
-	local args = {n = select("#", ...), ...}
+	local message = "[" .. level .. "]"
+	local args = { n = select("#", ...), ... }
 
 	for i = 1, args.n, 1 do
 		message = message .. args[i]
 	end
 
-	table.insert(self.messages, { level = self.levels[level], text = message, time = 0 })
+	table.insert(self.messages, { level = self.levels[level], text = message, time = 0, persistent = false })
 end
 
----update timers 
---- @param dt number time passed since last upddate 
+---log a persistant message that can be  pdatedd
+---@param level LogLevel
+---@param ... any
+---@return Message
+function t:log_persistant(level, ...)
+	local message = "[" .. level .. "]"
+	local args = { n = select("#", ...), ... }
+
+	for i = 1, args.n, 1 do
+		message = message .. args[i]
+	end
+
+	local msg = { level = self.levels[level], text = message, time = 0, persistent = true }
+
+	table.insert(self.messages, msg)
+	return msg
+end
+
+---update timers
+--- @param dt number time passed since last upddate
 function t:update(dt)
 	local old = {}
 	for i, msg in ipairs(self.messages) do
-		msg.time = msg.time + dt
-		if msg.time >= self.config.show_time then
-			table.insert(old, i)
+		if not msg.persistant then
+			msg.time = msg.time + dt
+			if msg.time >= self.config.show_time then
+				table.insert(old, i)
+			end
 		end
 	end
 end
@@ -61,7 +82,7 @@ function t:draw()
 end
 
 ---Call to set up the log system
----Creates the global functions Error, Warn, Info, Debug and trace which lets you quickly log a message. 
+---Creates the global functions Error, Warn, Info, Debug and trace which lets you quickly log a message.
 ---Calling this setup function will also redirect the print fuction to log a message with the linfo level.
 function t:setup()
 	self.messages = {}
