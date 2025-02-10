@@ -9,12 +9,12 @@ local colors = require("colors").colors
 ---the log structure
 ---@field private messages Message[] messages currently shown on screen.
 ---@field config LogConfig
-local t = {}
+local Log = {}
 
 ---@class LogConfig contains options for the log systemm
 ---@field fade_time number the time during which the message is faded out.
 ---@field show_time number the time that a message is shown on screen.
-t.config = {
+Log.config = {
 	fade_time = 1,
 	show_time = 5,
 }
@@ -22,12 +22,12 @@ t.config = {
 ---Log a message to the screen
 ---@param level LogLevel level of this log
 ---@param ... any content to be printed.
-function t:log(level, ...)
+function Log:log(level, ...)
 	local message = "[" .. level .. "]"
 	local args = { n = select("#", ...), ... }
 
 	for i = 1, args.n, 1 do
-		message = message .. args[i]
+		message = message .. tostring(args[i])
 	end
 
 	table.insert(self.messages, { level = self.levels[level], text = message, time = 0, persistent = false })
@@ -37,7 +37,7 @@ end
 ---@param level LogLevel
 ---@param ... any
 ---@return Message
-function t:log_persistant(level, ...)
+function Log:log_persistant(level, ...)
 	local message = "[" .. level .. "]"
 	local args = { n = select("#", ...), ... }
 
@@ -53,7 +53,7 @@ end
 
 ---update timers
 --- @param dt number time passed since last upddate
-function t:update(dt)
+function Log:update(dt)
 	local old = {}
 	for i, msg in ipairs(self.messages) do
 		if not msg.persistant then
@@ -66,7 +66,7 @@ function t:update(dt)
 end
 
 ---Call during love draw function
-function t:draw()
+function Log:draw()
 	local font = love.graphics.getFont()
 	for index, msg in ipairs(self.messages) do
 		local time_left = self.config.show_time - msg.time
@@ -84,7 +84,7 @@ end
 ---Call to set up the log system
 ---Creates the global functions Error, Warn, Info, Debug and trace which lets you quickly log a message.
 ---Calling this setup function will also redirect the print fuction to log a message with the linfo level.
-function t:setup()
+function Log:setup()
 	self.messages = {}
 	self.std_print = print
 	print = function(...)
@@ -114,7 +114,7 @@ function t:setup()
 end
 
 ---@enum (key) LogLevel
-t.levels = {
+Log.levels = {
 	ERROR = 1,
 	WARN = 2,
 	INFO = 3,
@@ -123,7 +123,7 @@ t.levels = {
 }
 
 ---@type table<LogLevel, color>
-t.colors = {
+Log.colors = {
 	colors.RED,
 	colors.YELLOW,
 	colors.WHITE,
@@ -131,4 +131,4 @@ t.colors = {
 	colors.GREEN
 }
 
-return t
+return Log
