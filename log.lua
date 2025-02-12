@@ -9,7 +9,7 @@ local colors = require("colors").colors
 ---the log structure
 ---@field private messages Message[] messages currently shown on screen.
 ---@field config LogConfig
-local Log = {}
+Log = {}
 
 ---@class LogConfig contains options for the log systemm
 ---@field fade_time number the time during which the message is faded out.
@@ -111,6 +111,22 @@ function Log:setup()
 	Trace = function(...)
 		self:log("TRACE", ...)
 	end
+end
+
+---log a whole table
+---@param table table the table to log
+---@param level? LogLevel the level to use. Defaults to `INFO`
+function Log:log_table(table, level)
+	level = level or "INFO"
+	local out = "{"
+	for key, value in pairs(table) do
+		out = out ..
+			tostring(key) ..
+			":" ..
+			tostring(value) ..
+			","
+	end
+	self:log(level, out .. "}")
 end
 
 ---@enum (key) LogLevel
