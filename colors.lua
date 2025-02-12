@@ -1,4 +1,5 @@
 local t = {}
+---@alias Color [number, number, number] | [number, number, number, number]
 
 ---@enum color
 t.colors = {

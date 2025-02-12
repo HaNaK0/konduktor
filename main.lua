@@ -1,86 +1,93 @@
-local util = require("util")
-local colors = require("colors").colors
+require("none")
+require("debug_systems")
 local my_colors = require("colors").my_colors
-local dragable = require("draggable")
 local log = require("log")
+require("game")
 
-local dragables = {}
-local hand = {
-    empty = true,
-    held_item = nil,
-}
+---@type Option<Game>
+local game = None
+
+---a system that waits 3 seconds and then starts the load of the game
+---@param dt number
+---@param start_timer any
+---@param update_systems SystemCollection
+---@param entities EntityCollection
+local function start_wait_system(dt, start_timer, update_systems, entities)
+	start_timer.time = start_timer.time + dt
+	if start_timer.time > 1 then
+		Debug("Start wait is over")
+		local entity = Entity.new()
+		---@type RectComponent
+		local rect = {
+			type = "Rect",
+			width = 20,
+			height = 10
+		}
+		Entity.add_component(entity, rect)
+
+		---@type ColorComponent
+		local col = {
+			type = "Color",
+			color = my_colors.ticket_color
+		}
+		Entity.add_component(entity, col)
+
+		---@type TranslateComponent
+		local trans = {
+			type = "Translate",
+			x = 0,
+			y = 0,
+		}
+		Entity.add_component(entity, trans)
+
+		table.insert(entities.entities,
+			entity)
+
+		Systems.remove_system(update_systems,
+			"start_wait")
+	end
+end
 
 function love.load()
-    log:setup()
-    local x, y = util.screen_space(0.5, 0.5)
-    local ticket = dragable.new(my_colors.ticket_color, x, y, 75, 50)
-    table.insert(dragables, ticket)
+	log:setup()
+	game = Game.new()
+	Systems.add_system(game.draw_systems,
+		DebugSystems.draw_rect_system,
+		"draw_rectangle",
+		1,
+		false,
+		{ "Rect", "Translate", "Color" },
+		{}
+	)
+	Systems.add_system(game.update_systems,
+		start_wait_system,
+		"start_wait",
+		1,
+		false,
+		{},
+		{"dt" ,"start_timer", "update_systems", "entities"})
+	game.resources = {
+		dt = 0,
+		start_timer = {time = 0},
+		update_systems = game.update_systems,
+		entities = game.entities,
+	}
+
 	Info("loading done")
 end
 
 function love.draw()
-    love.graphics.setBackgroundColor(0.188, 0.757, 1, 1)
+	love.graphics.setBackgroundColor(0.188, 0.757, 1, 1)
 
-    -- Draw table
-    love.graphics.setColor(my_colors.table_color)
+	log:draw()
 
-    local x, y = util.screen_space(0.05, 0.5)
-    local width, height = util.screen_space(0.9, 0.45)
-
-    love.graphics.rectangle("fill", x, y, width, height)
-
-    -- Draw Dragables
-    for _, v in pairs(dragables) do
-        love.graphics.setColor(v.color)
-
-        love.graphics.rectangle("fill", v.x, v.y, v.width, v.height)
-    end
-
-    if not hand.empty then
-        local item = hand.held_item
-
-        love.graphics.setColor(item.color)
-        love.graphics.rectangle("fill", item.x, item.y, item.width, item.height)
-    end
-    local s_width, s_height, _ = love.window.getMode()
-    log:draw()
+	Systems.execute(game.draw_systems, game.entities, game.resources)
 end
 
 function love.update(dt)
 	log:update(dt)
-end
-
-function love.mousemoved(_, _, dx, dy)
-    if not hand.empty then
-        local item = hand.held_item
-        item.x = item.x + dx
-        item.y = item.y + dy
-    end
-end
-
-function love.mousepressed(x, y, button, _)
-    if not (button == 1) then
-        return
-    end
-
-    for index, item in ipairs(dragables) do
-        if item:vs_point(x, y) then
-            hand.empty = false
-            hand.held_item = table.remove(dragables, index)
-        end
-    end
-end
-
-function love.mousereleased(x, y, button, _)
-    if not (button == 1) then
-        return
-    end
-
-    if not hand.empty then
-        hand.empty = true
-        table.insert(dragables, hand.held_item)
-        hand.held_item = nil
-    end
+	game.resources.dt = dt
+	Systems.execute(game.update_systems, game.entities, game.resources)
 end
 
 function love.resize(w, h)
