@@ -68,17 +68,22 @@ end
 ---Call during love draw function
 function Log:draw()
 	local font = love.graphics.getFont()
-	for index, msg in ipairs(self.messages) do
+	local colored_text = {}
+	local screen_width = love.graphics.getWidth()
+
+	for _, msg in ipairs(self.messages) do
 		local time_left = self.config.show_time - msg.time
 		local alpha = 1
 		if time_left <= self.config.fade_time then
 			alpha = time_left / self.config.fade_time
 		end
-		local line_y = font:getHeight() * (index - 1)
 		local c = self.colors[msg.level]
-		love.graphics.setColor(c[1], c[2], c[3], alpha)
-		love.graphics.print(msg.text, 0, line_y)
+		table.insert(colored_text, {c[1], c[2], c[3], alpha})
+		table.insert(colored_text, msg.text .. "\n")
 	end
+
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.printf(colored_text, font, 0, 0, screen_width)
 end
 
 ---Call to set up the log system
