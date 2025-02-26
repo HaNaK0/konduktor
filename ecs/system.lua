@@ -104,7 +104,7 @@ function Systems.execute(collection, entities, resources)
 		if next(system.components) == nil then
 			system(unpack(res))
 		else
-			local ents = Entity.collection.filter_components(entities, system.entity, system.components)
+			local ents = Entity.filter_components(entities, system.entity, system.components)
 			for _, comps in ipairs(ents) do
 				for i,r in ipairs(res) do
 					comps[#comps + i] = r

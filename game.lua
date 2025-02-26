@@ -15,7 +15,7 @@ function Game.new()
 	return {
 		update_systems = Systems.new_collection(),
 		draw_systems = Systems.new_collection(),
-		entities = Entity.collection.new(),
+		entities = Entity.new_collection(),
 		resources = {}
 	}
 end

@@ -1,8 +1,8 @@
 require("none")
 require("debug_systems")
-local my_colors = require("colors").my_colors
 local log = require("log")
 require("game")
+require("scenes.scene")
 
 ---@type Option<Game>
 local game = None
@@ -16,33 +16,10 @@ local function start_wait_system(dt, start_timer, update_systems, entities)
 	start_timer.time = start_timer.time + dt
 	if start_timer.time > 1 then
 		Debug("Start wait is over")
-		local entity = Entity.new()
-		---@type RectComponent
-		local rect = {
-			type = "Rect",
-			width = 20,
-			height = 10
-		}
-		Entity.add_component(entity, rect)
 
-		---@type ColorComponent
-		local col = {
-			type = "Color",
-			color = my_colors.ticket_color
-		}
-		Entity.add_component(entity, col)
+		local scene = Scene.load_scene("main_scene")
 
-		---@type TranslateComponent
-		local trans = {
-			type = "Translate",
-			x = 0,
-			y = 0,
-		}
-		Entity.add_component(entity, trans)
-
-		table.insert(entities.entities,
-			entity)
-
+		Entity.add_enteties(entities, scene.entities)
 		Systems.remove_system(update_systems,
 			"start_wait")
 	end
