@@ -3,6 +3,7 @@ require("debug_systems")
 local log = require("log")
 require("game")
 require("scenes.scene")
+require("drawing.systems")
 
 ---@type Option<Game>
 local game = None
@@ -36,6 +37,21 @@ function love.load()
 		{ "Rect", "Translate", "Color" },
 		{}
 	)
+	Systems.add_system(game.draw_systems,
+		DrawSystems.draw_image_system,
+		"draw_image",
+		1,
+		false,
+		{"Image", "Translate"},
+		{"draw_buffer"})
+	Systems.add_system(game.draw_systems,
+		DrawSystems.draw_buffer_system,
+		"draw_buffer",
+		2,
+		false,
+		{},
+		{"draw_buffer"})
+
 	Systems.add_system(game.update_systems,
 		start_wait_system,
 		"start_wait",
@@ -48,6 +64,7 @@ function love.load()
 		start_timer = {time = 0},
 		update_systems = game.update_systems,
 		entities = game.entities,
+		draw_buffer = {}
 	}
 
 	Info("loading done")

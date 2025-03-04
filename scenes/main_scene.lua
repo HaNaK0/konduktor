@@ -23,10 +23,10 @@ ticket_components.rect = {
 	height = 100,
 }
 
----@type ColorComponent
-ticket_components.color = {
-	type = "Color",
-	color = require('colors').my_colors.ticket_color
+---@type ImageComponent
+ticket_components.image = {
+	type = "Image",
+	image = love.graphics.newImage("assets/ticket_placeholder.png")
 }
 
 local ticket = Entity.new(ticket_components)
