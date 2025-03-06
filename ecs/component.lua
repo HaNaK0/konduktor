@@ -12,7 +12,8 @@ ComponentType = {
 ---@field type ComponentType
 
 ---@class ImageComponent:Component
----@field image love.Image
+---@field image love.Image?
+---@field path string
 
 ---@class RectComponent:Component
 ---@field width integer

@@ -26,7 +26,7 @@ ticket_components.rect = {
 ---@type ImageComponent
 ticket_components.image = {
 	type = "Image",
-	image = love.graphics.newImage("assets/ticket_placeholder_large.png")
+	path = "assets/ticket_placeholder_large.png",
 }
 
 local ticket = Entity.new(ticket_components)

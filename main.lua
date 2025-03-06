@@ -13,12 +13,12 @@ local game = None
 ---@param start_timer any
 ---@param update_systems SystemCollection
 ---@param entities EntityCollection
-local function start_wait_system(dt, start_timer, update_systems, entities)
+local function start_wait_system(dt, start_timer, update_systems, entities, assets)
 	start_timer.time = start_timer.time + dt
 	if start_timer.time > 1 then
 		Debug("Start wait is over")
 
-		local scene = Scene.load_scene("main_scene")
+		local scene = Scene.load_scene("main_scene", assets)
 
 		Entity.add_enteties(entities, scene.entities)
 		Systems.remove_system(update_systems,
@@ -58,13 +58,14 @@ function love.load()
 		1,
 		false,
 		{},
-		{"dt" ,"start_timer", "update_systems", "entities"})
+		{"dt" ,"start_timer", "update_systems", "entities", "assets"})
 	game.resources = {
 		dt = 0,
 		start_timer = {time = 0},
 		update_systems = game.update_systems,
 		entities = game.entities,
-		draw_buffer = {}
+		draw_buffer = {},
+		assets = {}
 	}
 
 	Info("loading done")
