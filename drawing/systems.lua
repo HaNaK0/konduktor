@@ -25,8 +25,9 @@ function DrawSystems.draw_buffer_system(draw_buffer)
 	end)
 
 	for index, command in ipairs(draw_buffer) do
-		love.graphics.draw(command.drawable, command.transform )
-
+		if command.drawable then
+			love.graphics.draw(command.drawable, command.transform )
+		end
 		draw_buffer[index] = nil
 	end
 end
