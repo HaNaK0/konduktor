@@ -13,18 +13,21 @@ function Scene.load_scene(scene_name)
 		string.gsub(scene_name, "%.", "/") ..
 		".lua"
 
-	local ok, chunk, err = pcall(
-		love.filesystem.load, path
-	)
-
-	chunk = love.filesystem.load(path)
+	local sucess, chunk, err= pcall(love.filesystem.load, path)
 	---@type Entity[]
 	local enteties = {}
 
-	if ok and chunk ~= nil then
-		enteties = chunk()
-	else
+	if not sucess then
+		Error("failed to load scene \"", scene_name, "\" :", chunk)
+	elseif not chunk then
 		Error("failed to load scene \"", scene_name, "\" :", err)
+	else
+		local inner_sucess, res = pcall(chunk)
+		if inner_sucess then
+			enteties = res
+		else
+			Error("failed to load scene \"", scene_name, "\" :", res)
+		end
 	end
 
 	return Entity.new_collection(enteties)
