@@ -16,13 +16,6 @@ ticket_components.translate = {
 	y = 100,
 }
 
----@type RectComponent
-ticket_components.rect = {
-	type = "Rect",
-	width = 200,
-	height = 100,
-}
-
 ---@type ImageComponent
 ticket_components.image = {
 	type = "Image",
