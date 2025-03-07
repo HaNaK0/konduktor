@@ -1,15 +1,18 @@
-require('loaders.component_loaders')
 require("ecs.entity")
+require("ecs.system")
 ---@alias Scene Entity[]
 
 Scene = {
-	scene_root = "scenes/"
+	scene_root = "scenes/",
+	---@type SystemCollection
 }
 
 ---load a scene from a file
 ---@param scene_name string a scene name formated in the same way as a module but with the scene root as root
+---@param load_systems SystemCollection the systems used to load this scene
+---@param assets AssetStorage
 ---@return EntityCollection
-function Scene.load_scene(scene_name, assets)
+function Scene.load_scene(scene_name, load_systems, assets)
 	local path = Scene.scene_root ..
 		string.gsub(scene_name, "%.", "/") ..
 		".lua"
@@ -31,14 +34,11 @@ function Scene.load_scene(scene_name, assets)
 		end
 	end
 
-	for _, entity in ipairs(enteties) do
-		for type, component in pairs(entity.components) do
-			if ComponentLoaders[type] then
-				entity.components[type] = ComponentLoaders[type](component, assets)
-			end
-		end
-	end
-	return Entity.new_collection(enteties)
+	local entity_collection = Entity.new_collection(enteties)
+
+	Systems.execute(load_systems, entity_collection, { assets = assets })
+
+	return entity_collection
 end
 
 return Scene

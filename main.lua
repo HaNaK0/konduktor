@@ -1,9 +1,10 @@
 require("none")
-require("debug_systems")
+require("systems.debug_systems")
 local log = require("log")
 require("game")
 require("scenes.scene")
 require("drawing.systems")
+require("systems.load_systems")
 
 ---@type Option<Game>
 local game = None
@@ -13,12 +14,13 @@ local game = None
 ---@param start_timer any
 ---@param update_systems SystemCollection
 ---@param entities EntityCollection
-local function start_wait_system(dt, start_timer, update_systems, entities, assets)
+---@param load_systems SystemCollection
+local function start_wait_system(dt, start_timer, update_systems, entities, assets, load_systems)
 	start_timer.time = start_timer.time + dt
 	if start_timer.time > 1 then
 		Debug("Start wait is over")
 
-		local scene = Scene.load_scene("main_scene", assets)
+		local scene = Scene.load_scene("main_scene", load_systems, assets)
 
 		Entity.add_enteties(entities, scene.entities)
 		Systems.remove_system(update_systems,
@@ -58,11 +60,21 @@ function love.load()
 		1,
 		false,
 		{},
-		{"dt" ,"start_timer", "update_systems", "entities", "assets"})
+		{"dt" ,"start_timer", "update_systems", "entities", "assets", "load_systems"})
+
+	Systems.add_system(game.load_systems,
+		LoadSystems.load_sprite_system,
+		"load_system",
+		1,
+		true,
+		{"Image"},
+		{"assets"})
+
 	game.resources = {
 		dt = 0,
 		start_timer = {time = 0},
 		update_systems = game.update_systems,
+		load_systems = game.load_systems,
 		entities = game.entities,
 		draw_buffer = {},
 		assets = {}

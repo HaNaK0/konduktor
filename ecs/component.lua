@@ -28,3 +28,5 @@ ComponentType = {
 
 ---@class NameComponent:Component
 ---@field name string
+
+---@class PickupComponent:Component
