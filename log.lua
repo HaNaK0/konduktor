@@ -14,9 +14,11 @@ Log = {}
 ---@class LogConfig contains options for the log systemm
 ---@field fade_time number the time during which the message is faded out.
 ---@field show_time number the time that a message is shown on screen.
+---@field log_file string? the name of the log file or nil if the program should not log to file
 Log.config = {
 	fade_time = 1,
 	show_time = 5,
+	log_file = "log.txt"
 }
 
 ---Log a message to the screen
@@ -31,6 +33,10 @@ function Log:log(level, ...)
 	end
 
 	table.insert(self.messages, { level = self.levels[level], text = message, time = 0, persistent = false })
+	if self.config.log_file then
+		local success, err = love.filesystem.append(self.config.log_file, message .. "\n")
+		assert(success, err)
+	end
 end
 
 ---log a persistant message that can be  pdatedd
@@ -115,6 +121,10 @@ function Log:setup()
 
 	Trace = function(...)
 		self:log("TRACE", ...)
+	end
+
+	if self.config.log_file then
+		love.filesystem.write(self.config.log_file, "")
 	end
 end
 
