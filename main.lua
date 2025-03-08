@@ -5,6 +5,8 @@ require("game")
 require("scenes.scene")
 require("drawing.systems")
 require("systems.load_systems")
+require('systems.pickup_systems')
+require('systems.mouse_systems')
 
 ---@type Option<Game>
 local game = None
@@ -31,6 +33,7 @@ end
 function love.load()
 	log:setup()
 	game = Game.new()
+	-- draw systems
 	Systems.add_system(game.draw_systems,
 		DebugSystems.draw_rect_system,
 		"draw_rectangle",
@@ -54,6 +57,7 @@ function love.load()
 		{},
 		{"draw_buffer"})
 
+	-- update systems
 	Systems.add_system(game.update_systems,
 		start_wait_system,
 		"start_wait",
@@ -62,9 +66,26 @@ function love.load()
 		{},
 		{"dt" ,"start_timer", "update_systems", "entities", "assets", "load_systems"})
 
+	Systems.add_system(game.update_systems,
+		MouseSystems.update_mouse_system,
+		"update_mouse",
+		0,
+		false,
+		{},
+		{"mouse"})
+
+	Systems.add_system(game.update_systems,
+		PickupSystems.pickup_update_system,
+		"pickup_update",
+		2,
+		false,
+		{"Pickup", "Translate", "Rect"},
+		{"pickup_handler", "mouse"})
+
+	-- load systems
 	Systems.add_system(game.load_systems,
 		LoadSystems.load_sprite_system,
-		"load_system",
+		"load_image_system",
 		1,
 		true,
 		{"Image"},
@@ -77,7 +98,11 @@ function love.load()
 		load_systems = game.load_systems,
 		entities = game.entities,
 		draw_buffer = {},
-		assets = {}
+		assets = {},
+		---@type Mouse
+		mouse = {x = love.mouse.getX(), y = love.mouse.getY(), move_x = 0, move_y = 0},
+		---@type PickupHandler
+		pickup_handler = {},
 	}
 
 	Info("loading done")

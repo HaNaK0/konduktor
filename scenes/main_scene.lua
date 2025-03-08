@@ -12,14 +12,19 @@ ticket_components.name = {
 ---@type TranslateComponent
 ticket_components.translate = {
 	type = "Translate",
-	x = 100,
-	y = 100,
+	x = 500,
+	y = 500,
 }
 
 ---@type ImageComponent
 ticket_components.image = {
 	type = "Image",
 	path = "assets/ticket_placeholder_large.png",
+}
+
+---@type PickupComponent
+ticket_components.pickup = {
+	type = "Pickup",
 }
 
 local ticket = Entity.new(ticket_components)

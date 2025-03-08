@@ -6,6 +6,7 @@ ComponentType = {
 	Name = 4,
 	Rect = 5,
 	Color = 6,
+	Pickup = 7,
 }
 
 ---@class Component
