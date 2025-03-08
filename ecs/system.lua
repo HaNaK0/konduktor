@@ -17,6 +17,7 @@ function Systems.new_collection()
 end
 
 ---@class System
+---@field name string the name of the system
 ---@field prio integer prority of this system higher systems are executed first.
 ---@field target fun(...) the function this system callss
 ---@field entity boolean if this system needs the entity to be passed to it
@@ -51,6 +52,7 @@ end
 function Systems.add_system(collection, target, name, prio, entity, comps, res)
 	---@type System
 	local s = {
+		name = name,
 		entity = entity,
 		components = comps,
 		resources = res,
@@ -98,6 +100,11 @@ function Systems.execute(collection, entities, resources)
 	for _, system in ipairs(collection.system_array) do
 		local res = {}
 		for j, resource in ipairs(system.resources) do
+			if resources[resource] == nil then
+				Error("Failed to find ", resource, " in the resources")
+				Log:log_table(resources, "TRACE")
+				return
+			end
 			table.insert(res, j, resources[resource])
 		end
 
@@ -106,10 +113,18 @@ function Systems.execute(collection, entities, resources)
 		else
 			local ents = Entity.filter_components(entities, system.entity, system.components)
 			for _, comps in ipairs(ents) do
-				for i,r in ipairs(res) do
-					comps[#comps + i] = r
+				for _,r in ipairs(res) do
+					comps[#comps + 1] = r
 				end
-				system(unpack(comps))
+				local ok, err = pcall(system.target, unpack(comps))
+				if not ok then
+					Error("Failed to call system", system.name, " due to ", err)
+					Log:log_table(comps, "TRACE")
+					Log:log_table(res, "TRACE")
+					Log:log_table(resources, "TRACE")
+					Systems.remove_system(collection, system.name)
+					break
+				end
 			end
 		end
 	end
