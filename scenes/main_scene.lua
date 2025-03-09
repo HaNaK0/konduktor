@@ -19,7 +19,7 @@ ticket_components.translate = {
 ---@type ImageComponent
 ticket_components.image = {
 	type = "Image",
-	path = "assets/ticket_placeholder_large.png",
+	path = "assets/sprites/ticket_placeholder_large.png",
 }
 
 ---@type PickupComponent
