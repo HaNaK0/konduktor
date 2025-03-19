@@ -23,7 +23,7 @@ def build_components():
 
         f.write("---@class ComponentCollection\n")
         for componentType in components:
-            f.write(f"---@field {componentType.type_name} {componentType.full_name}\n")
+            f.write(f"---@field {componentType.type_name} {componentType.full_name}?\n")
 
         f.write("\n---@alias ComponentType\n")
         for componentType in components:
