@@ -2,7 +2,7 @@
 ---@field entities Entity[]
 
 ---@class Entity:Component
----@field components table<ComponentType, Component>
+---@field components ComponentCollection
 
 Entity = {}
 Entity.entity_mt = {}

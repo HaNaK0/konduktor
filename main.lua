@@ -79,8 +79,8 @@ function love.load()
 		"pickup_update",
 		2,
 		false,
-		{"Pickup", "Translate", "Rect"},
-		{"pickup_handler", "mouse"})
+		{"Pickup", "Translate", "Rect", "Collider"},
+		{"pickup_handler", "mouse", "reciever_handler"})
 
 	-- load systems
 	Systems.add_system(game.load_systems,
@@ -90,6 +90,14 @@ function love.load()
 		true,
 		{"Image"},
 		{"assets"})
+
+	Systems.add_system(game.load_systems,
+		LoadSystems.load_reciever_system,
+		"load_reciever",
+		1,
+		true,
+		{"Reciever"},
+		{"reciever_handler"})
 
 	game.resources = {
 		dt = 0,
@@ -103,6 +111,8 @@ function love.load()
 		mouse = {x = love.mouse.getX(), y = love.mouse.getY(), move_x = 0, move_y = 0},
 		---@type PickupHandler
 		pickup_handler = {},
+		---@type CollisionHandler
+		reciever_handler = {entity_collection = Entity.new_collection({})},
 	}
 
 	Info("loading done")
@@ -111,9 +121,8 @@ end
 function love.draw()
 	love.graphics.setBackgroundColor(0.188, 0.757, 1, 1)
 
-	log:draw()
-
 	Systems.execute(game.draw_systems, game.entities, game.resources)
+	log:draw()
 end
 
 function love.update(dt)

@@ -1,5 +1,6 @@
 require("ecs.entity")
 require("log")
+require("colors")
 
 local ticket_components = {}
 
@@ -20,6 +21,7 @@ ticket_components.translate = {
 ticket_components.image = {
 	type = "Image",
 	path = "assets/sprites/ticket_placeholder_large.png",
+	depth = 1
 }
 
 ---@type PickupComponent
@@ -29,5 +31,46 @@ ticket_components.pickup = {
 
 local ticket = Entity.new(ticket_components)
 
-return { ticket }
+local table_components = {}
+
+---@type NameComponent
+table_components.name = {
+	type = "Name",
+	name = "Table",
+}
+
+---@type TranslateComponent
+table_components.translate = {
+	type = "Translate",
+	x = 50,
+	y = 50,
+}
+
+---@type RectComponent
+table_components.rect = {
+	type = "Rect",
+	width = 300,
+	height = 100,
+}
+
+---@type ColliderComponent
+table_components.collider = {
+	type = "Collider"
+}
+
+---@type RecieverComponent
+table_components.reciever = {
+	type = "Reciever"
+}
+
+---@type ImageComponent
+table_components.image = {
+	type = "Image",
+	path = "assets/sprites/table_placeholder.png",
+	depth = 10,
+}
+
+local konduktor_table = Entity.new(table_components)
+
+return { ticket, konduktor_table }
 

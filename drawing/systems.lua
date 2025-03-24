@@ -9,7 +9,7 @@ function DrawSystems.draw_image_system(image,translate,draw_buffer)
 
 	---@type DrawCommand
 	local command = {
-		depth = 1,
+		depth = image.depth,
 		drawable = image.image,
 		transform = transform,
 	}

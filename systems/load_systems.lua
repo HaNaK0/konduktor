@@ -1,4 +1,5 @@
 require('loaders.asset_loader')
+require('ecs.entity')
 LoadSystems = {}
 
 ---the system that loads the sprite component
@@ -25,6 +26,14 @@ function LoadSystems.load_sprite_system(entity, imageComponent, assets)
 
 		Entity.add_component(entity, rect)
 	end
+end
+
+--- A system that loads the reciever compponets and adds them to their handler
+---@param entity Entity the entity
+---@param _ RecieverComponent a reciever component that is queried for 
+---@param reciever_handler CollisionHandler the collsion handler responsible for recievers.
+function LoadSystems.load_reciever_system(entity, _, reciever_handler)
+	Entity.add_enteties(reciever_handler.entity_collection, entity)
 end
 
 return LoadSystems

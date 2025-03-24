@@ -1,13 +1,4 @@
----@enum (key) ComponentType
-ComponentType = {
-	Entity = 1,
-	Image = 2,
-	Translate = 3,
-	Name = 4,
-	Rect = 5,
-	Color = 6,
-	Pickup = 7,
-}
+---@meta Component
 
 ---@class Component
 ---@field type ComponentType
@@ -15,6 +6,7 @@ ComponentType = {
 ---@class ImageComponent:Component
 ---@field image love.Image?
 ---@field path string
+---@field depth number
 
 ---@class RectComponent:Component
 ---@field width integer
@@ -31,3 +23,7 @@ ComponentType = {
 ---@field name string
 
 ---@class PickupComponent:Component
+
+---@class ColliderComponent:Component
+
+---@class RecieverComponent:Component
