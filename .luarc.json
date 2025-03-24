@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
-  "workspace.library": ["${3rd}/love2d/library",],
+  "workspace.library": ["${3rd}/love2d/library","lib/generated"],
   "runtime.version": "LuaJIT",
   "hint.enable": false
 }
