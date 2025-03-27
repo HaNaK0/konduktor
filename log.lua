@@ -15,16 +15,22 @@ Log = {}
 ---@field fade_time number the time during which the message is faded out.
 ---@field show_time number the time that a message is shown on screen.
 ---@field log_file string? the name of the log file or nil if the program should not log to file
+---@field log_level LogLevel set the log level to show this and more severe logs.
 Log.config = {
 	fade_time = 1,
 	show_time = 5,
-	log_file = "log.txt"
+	log_file = "log.txt",
+	log_level = "TRACE",
 }
 
 ---Log a message to the screen
 ---@param level LogLevel level of this log
 ---@param ... any content to be printed.
 function Log:log(level, ...)
+	if self.levels[level]  > self.levels[self.config.log_level] then
+		return
+	end
+
 	local message = "[" .. level .. "]"
 	local args = { n = select("#", ...), ... }
 
