@@ -1,13 +1,14 @@
 local colors = require("colors").colors
 ---@class Message
----@field level LogLevel
+---@field level number
 ---@field text string
 ---@field time number
----@field persistant boolean
+---@field key string? the key for this message if it is persistant otherwise this will be nil
 
 ---@class Log
 ---the log structure
 ---@field private messages Message[] messages currently shown on screen.
+---@field private persistant_messages {[string]: Message} persistant mesages
 ---@field config LogConfig
 Log = {}
 
@@ -38,29 +39,42 @@ function Log:log(level, ...)
 		message = message .. tostring(args[i])
 	end
 
-	table.insert(self.messages, { level = self.levels[level], text = message, time = 0, persistent = false })
+	table.insert(self.messages, { level = self.levels[level], text = message, time = 0})
 	if self.config.log_file then
 		local success, err = love.filesystem.append(self.config.log_file, message .. "\n")
 		assert(success, err)
 	end
 end
 
----log a persistant message that can be  pdatedd
+---Log a message once and update it every time this function is
+---called again with the same key
 ---@param level LogLevel
----@param ... any
----@return Message
-function Log:log_persistant(level, ...)
+---@param key string a unique key that is used to identify the message
+---@param ... any the content to be logged
+function Log:log_persistent(level, key, ...)
+	if self.levels[level]  > self.levels[self.config.log_level] then
+		return
+	end
+
 	local message = "[" .. level .. "]"
 	local args = { n = select("#", ...), ... }
 
 	for i = 1, args.n, 1 do
-		message = message .. args[i]
+		message = message .. tostring(args[i])
 	end
 
-	local msg = { level = self.levels[level], text = message, time = 0, persistent = true }
+	if not self.persistant_messages[key] then
+		---@type Message
+		local msg = { level = self.levels[level], text = message, time = 0, key = key}
+		self.persistant_messages[key] = msg
+		table.insert(self.messages, msg)
+		return
+	end
 
-	table.insert(self.messages, msg)
-	return msg
+	local msg = self.persistant_messages[key]
+	msg.text = message .. msg.time
+
+	msg.time = 0
 end
 
 ---update timers
@@ -68,12 +82,17 @@ end
 function Log:update(dt)
 	local old = {}
 	for i, msg in ipairs(self.messages) do
-		if not msg.persistant then
-			msg.time = msg.time + dt
-			if msg.time >= self.config.show_time then
-				table.insert(old, i)
+		msg.time = msg.time + dt
+		if msg.time >= self.config.show_time then
+			table.insert(old, i)
+			if msg.key then
+				self.persistant_messages[msg.key] = nil
 			end
 		end
+	end
+
+	for _, index in ipairs(old) do
+		table.remove(self.messages, index)
 	end
 end
 
@@ -103,6 +122,7 @@ end
 ---Calling this setup function will also redirect the print fuction to log a message with the linfo level.
 function Log:setup()
 	self.messages = {}
+	self.persistant_messages = {}
 	self.std_print = print
 	print = function(...)
 		self.std_print(...)
