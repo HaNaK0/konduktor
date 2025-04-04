@@ -16,13 +16,14 @@ local game = None
 ---@param start_timer any
 ---@param update_systems SystemCollection
 ---@param entities EntityCollection
+---@param resources ResourceCollection
 ---@param load_systems SystemCollection
-local function start_wait_system(dt, start_timer, update_systems, entities, assets, load_systems)
+local function start_wait_system(dt, start_timer, update_systems, entities, resources, load_systems)
 	start_timer.time = start_timer.time + dt
 	if start_timer.time > 1 then
 		Debug("Start wait is over")
 
-		local scene = Scene.load_scene("main_scene", load_systems, assets)
+		local scene = Scene.load_scene("main_scene", load_systems, resources)
 
 		Entity.add_enteties(entities, scene.entities)
 		Systems.remove_system(update_systems,
@@ -64,7 +65,7 @@ function love.load()
 		1,
 		false,
 		{},
-		{"dt" ,"start_timer", "update_systems", "entities", "assets", "load_systems"})
+		{"dt" ,"start_timer", "update_systems", "entities", "resources", "load_systems"})
 
 	Systems.add_system(game.update_systems,
 		MouseSystems.update_mouse_system,
@@ -111,9 +112,9 @@ function love.load()
 		mouse = {x = love.mouse.getX(), y = love.mouse.getY(), move_x = 0, move_y = 0},
 		---@type PickupHandler
 		pickup_handler = {},
-		---@type CollisionHandler
 		reciever_handler = {entity_collection = Entity.new_collection({})},
 	}
+	game.resources.resources = game.resources
 
 	Info("loading done")
 end

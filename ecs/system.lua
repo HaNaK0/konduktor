@@ -101,7 +101,7 @@ function Systems.execute(collection, entities, resources)
 		local res = {}
 		for j, resource in ipairs(system.resources) do
 			if resources[resource] == nil then
-				Error("Failed to find ", resource, " in the resources")
+				Error("Failed to find ", resource, " in the resources executing system ", system.name)
 				Log:log_table(resources, "TRACE")
 				return
 			end

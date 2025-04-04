@@ -38,7 +38,7 @@ end
 ---@param entity Entity the entity to add to
 ---@param components table<number|string,Component>
 function Entity.add_components(entity, components)
-	for _,component in pairs(components) do
+	for _, component in pairs(components) do
 		Entity.add_component(entity, component)
 	end
 end
@@ -54,7 +54,7 @@ function Entity.tostring(entity)
 		res = res .. "(" .. name_comp.name .. ")"
 	end
 
-	res = res.. ", components: {"
+	res = res .. ", components: {"
 	for type, _ in pairs(entity.components) do
 		res = res .. type .. ", "
 	end
@@ -62,6 +62,7 @@ function Entity.tostring(entity)
 
 	return res
 end
+
 Entity.entity_mt.__tostring = Entity.tostring
 
 ---create an new entity collection
@@ -74,10 +75,14 @@ end
 
 ---add several enteies to a collection
 ---@param collection EntityCollection
----@param enteties Entity[]
+---@param enteties (Entity[]|Entity)
 function Entity.add_enteties(collection, enteties)
-	for _, entity in ipairs(enteties) do
-		table.insert(collection.entities, entity)
+	if enteties.type == "Entity" then
+		table.insert(collection.entities, enteties)
+	else
+		for _, entity in ipairs(enteties) do
+			table.insert(collection.entities, entity)
+		end
 	end
 end
 
@@ -127,5 +132,3 @@ function Entity.filter_components(collec, include_entity, components)
 	end
 	return res
 end
-
-

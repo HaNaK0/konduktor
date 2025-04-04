@@ -33,7 +33,7 @@ end
 ---@param _ RecieverComponent a reciever component that is queried for 
 ---@param reciever_handler CollisionHandler the collsion handler responsible for recievers.
 function LoadSystems.load_reciever_system(entity, _, reciever_handler)
-	Entity.add_enteties(reciever_handler.entity_collection, entity)
+	Entity.add_enteties(reciever_handler.entity_collection, { entity })
 end
 
 return LoadSystems

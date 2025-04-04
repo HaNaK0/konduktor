@@ -15,6 +15,7 @@ CollisionHandler = {}
 function CollisionHandler.check_collionsions(handler, collider_entity, component_types)
 	local components = Entity.filter_components(handler.entity_collection, false, component_types)
 	local res = {}
+	Trace("Checking ", #handler.entity_collection.entities, " enteties")
 	for _, comps in ipairs(components) do
 		---@type ComponentCollection
 		local component_collection = {}

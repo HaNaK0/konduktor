@@ -1,4 +1,5 @@
 require('collision.handler')
+require('log')
 PickupSystems = {}
 
 ---@class PickupHandler
@@ -19,11 +20,13 @@ function PickupSystems.pickup_update_system(pickup, translate, rect, collider, h
 			mouse.x < translate.x + rect.width and
 			mouse.y < translate.y + rect.height then
 			handler.held_pickup = pickup
+			Trace("Pickup")
 		end
 	else
 		if love.mouse.isDown(1) then
 			translate.x = translate.x + mouse.move_x
 			translate.y = translate.y + mouse.move_y
+			Log:log_persistent("DEBUG", "Pickup", "pickup moved to (", translate.x, ", ", translate.y, ")")
 		else
 			handler.held_pickup = nil
 			local hits = CollisionHandler.check_collionsions(reciever_handler,

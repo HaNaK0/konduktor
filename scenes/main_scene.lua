@@ -29,6 +29,11 @@ ticket_components.pickup = {
 	type = "Pickup",
 }
 
+---@type ColliderComponent
+ticket_components.collider = {
+	type = "Collider"
+}
+
 local ticket = Entity.new(ticket_components)
 
 local table_components = {}
