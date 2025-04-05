@@ -1,5 +1,4 @@
 require("ecs.entity")
-require("log")
 Systems ={}
 
 ---@class SystemCollection

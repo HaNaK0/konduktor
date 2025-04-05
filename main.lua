@@ -1,3 +1,4 @@
+love.filesystem.setRequirePath(love.filesystem.getRequirePath() .. ";built/?.lua;built/?/init.lua")
 require("none")
 require("systems.debug_systems")
 local log = require("log")
