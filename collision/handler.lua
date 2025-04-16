@@ -39,13 +39,17 @@ function CollisionHandler.check_collionsions(handler, collider_entity, component
 				table.insert(res, component_collection)
 			end
 		else
-			local dx = collider_entity.translate.x - component_collection.Translate.x
-			local dy = collider_entity.translate.y - component_collection.Translate.y
+			local a_left = collider_entity.translate.x
+			local a_right = a_left + collider_entity.rect.width
+			local a_top = collider_entity.translate.y
+			local a_bot = a_top + collider_entity.rect.height
 
-			if dx >= -collider_entity.rect.width and
-				dx <= component_collection.Rect.width and
-				dy >= -collider_entity.rect.width and
-				dy <= component_collection.Rect.width then
+			local b_left = component_collection["Translate"].x
+			local b_right = b_left + component_collection["Rect"].width
+			local b_top = component_collection["Translate"].y
+			local b_bot = b_top + component_collection["Rect"].height
+
+			if not (a_right < b_left or b_right < a_left or a_bot < b_top or b_bot < a_top) then
 				table.insert(res, component_collection)
 			end
 		end
