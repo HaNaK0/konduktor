@@ -38,10 +38,10 @@ function love.load()
 	Systems.add_system(game.draw_systems,
 		DebugSystems.draw_rect_system,
 		"draw_rectangle",
-		1,
+		5,
 		false,
-		{ "Rect", "Translate", "Color" },
-		{}
+		{ "Rect", "Translate"},
+		{ "debug_options" }
 	)
 	Systems.add_system(game.draw_systems,
 		DrawSystems.draw_image_system,
@@ -113,6 +113,8 @@ function love.load()
 		---@type PickupHandler
 		pickup_handler = {},
 		reciever_handler = {entity_collection = Entity.new_collection({})},
+		---@type DebugOptions
+		debug_options = { draw_rect = true },
 	}
 	game.resources.resources = game.resources
 
