@@ -51,13 +51,6 @@ table_components.translate = {
 	y = 50,
 }
 
----@type RectComponent
-table_components.rect = {
-	type = "Rect",
-	width = 300,
-	height = 100,
-}
-
 ---@type ColliderComponent
 table_components.collider = {
 	type = "Collider"

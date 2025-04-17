@@ -40,7 +40,7 @@ function love.load()
 		"draw_rectangle",
 		5,
 		false,
-		{ "Rect", "Translate"},
+		{ "Rect", "Translate" },
 		{ "debug_options" }
 	)
 	Systems.add_system(game.draw_systems,
@@ -48,15 +48,15 @@ function love.load()
 		"draw_image",
 		1,
 		false,
-		{"Image", "Translate"},
-		{"draw_buffer"})
+		{ "Image", "Translate" },
+		{ "draw_buffer" })
 	Systems.add_system(game.draw_systems,
 		DrawSystems.draw_buffer_system,
 		"draw_buffer",
 		2,
 		false,
 		{},
-		{"draw_buffer"})
+		{ "draw_buffer" })
 
 	-- update systems
 	Systems.add_system(game.update_systems,
@@ -65,7 +65,7 @@ function love.load()
 		1,
 		false,
 		{},
-		{"dt" ,"start_timer", "update_systems", "entities", "resources", "load_systems"})
+		{ "dt", "start_timer", "update_systems", "entities", "resources", "load_systems" })
 
 	Systems.add_system(game.update_systems,
 		MouseSystems.update_mouse_system,
@@ -73,15 +73,15 @@ function love.load()
 		0,
 		false,
 		{},
-		{"mouse"})
+		{ "mouse" })
 
 	Systems.add_system(game.update_systems,
 		PickupSystems.pickup_update_system,
 		"pickup_update",
 		2,
 		false,
-		{"Pickup", "Translate", "Rect", "Collider"},
-		{"pickup_handler", "mouse", "reciever_handler"})
+		{ "Pickup", "Translate", "Rect", "Collider" },
+		{ "pickup_handler", "mouse", "reciever_handler" })
 
 	-- load systems
 	Systems.add_system(game.load_systems,
@@ -89,32 +89,32 @@ function love.load()
 		"load_image_system",
 		1,
 		true,
-		{"Image"},
-		{"assets"})
+		{ "Image" },
+		{ "assets" })
 
 	Systems.add_system(game.load_systems,
 		LoadSystems.load_reciever_system,
 		"load_reciever",
 		1,
 		true,
-		{"Reciever"},
-		{"reciever_handler"})
+		{ "Reciever" },
+		{ "reciever_handler" })
 
 	game.resources = {
 		dt = 0,
-		start_timer = {time = 0},
+		start_timer = { time = 0 },
 		update_systems = game.update_systems,
 		load_systems = game.load_systems,
 		entities = game.entities,
 		draw_buffer = {},
 		assets = {},
 		---@type Mouse
-		mouse = {x = love.mouse.getX(), y = love.mouse.getY(), move_x = 0, move_y = 0},
+		mouse = { x = love.mouse.getX(), y = love.mouse.getY(), move_x = 0, move_y = 0 },
 		---@type PickupHandler
 		pickup_handler = {},
-		reciever_handler = {entity_collection = Entity.new_collection({})},
+		reciever_handler = { entity_collection = Entity.new_collection({}) },
 		---@type DebugOptions
-		debug_options = { draw_rect = true },
+		debug_options = { draw_rect = false },
 	}
 	game.resources.resources = game.resources
 
@@ -136,4 +136,10 @@ end
 
 function love.resize(w, h)
 	Debug(("window resized to (%d, %d)"):format(w, h))
+end
+
+function love.keypressed(key, _, _)
+	if key == "d" then
+		game.resources.debug_options.draw_rect = not game.resources.debug_options.draw_rect
+	end
 end
